@@ -13,6 +13,6 @@ Feel on top of the world right now? Come back down and let [Dio Brando]( https:/
 ## Build Instructions:
 
 ```powershell
-g++ main.cpp -o diosay -std=c++11
+g++ main.cpp -o diosay -std=gnu++0x
 ```
 
