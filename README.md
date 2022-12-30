@@ -6,13 +6,12 @@ Feel on top of the world right now? Come back down and let [Dio Brando]( https:/
 
 <br />
 
-![Sample](/pic/sample000.png)
+![Sample](./pic/sample000.png)
 
 <br />
 
-## Build Instructions:
+## Build Instructions
 
-```powershell
+```shell
 g++ main.cpp -o diosay -std=gnu++0x
 ```
-
