@@ -1,11 +1,15 @@
+#include "res.h"
 #include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "res.h"
 
 #define POSIX 1
 #define WINDOWS 2
+#define NEWLINE_MODES_LF 4
+#define NEWLINE_MODES_CRLF 8
+
+#define NEWLINE_MODE NEWLINE_MODES_LF
 
 #ifndef PLATFORM
 #define PLATFORM WINDOWS
@@ -18,6 +22,12 @@
     #include <io.h>
     #define ISATTY(fd) _isatty(fd)
 #endif
+
+/* | Sequence | Hexadecimal |
+ * | -------- | ----------- |
+ * | CR       | 0x0a        |
+ * | LF       | 0x0d        |
+ */
 
 
 /*********************
@@ -111,7 +121,7 @@ int main(int argc, char ** argv)
                     length = max(length, text_length);
                     PrintTextWrapped(temp, help_line, text_length, INDENT_LENGTH, MAX_LENGTH);
                 }
-                
+
                 break;
             }
 
@@ -128,7 +138,7 @@ int main(int argc, char ** argv)
     if (!empty)
         PrintPrettyMessage(std::cout, buf, length);
 
-    PrintResource(std::cout, res_txt, res_txt_len, length - 31);
+    PrintResource(std::cout, res::txt, res::txt_len, length - 31);
     return 0;
 }
 
@@ -211,7 +221,7 @@ void PrintTextWrapped(std::ostream & out, const T & buf, int len, int indent, in
 {
     if (len == 0)
     {
-        out << std::setw(indent) << out.fill() << std::endl;
+        out << std::setw(indent) << out.fill() << '\n';
     }
     else
     {
@@ -222,7 +232,7 @@ void PrintTextWrapped(std::ostream & out, const T & buf, int len, int indent, in
         {
             if (count == max)
             {
-                out << std::setw(indent) << out.fill() << line.str() << std::endl;
+                out << std::setw(indent) << out.fill() << line.str() << '\n';
                 line.str("");
                 count = 0;
             }
@@ -235,7 +245,7 @@ void PrintTextWrapped(std::ostream & out, const T & buf, int len, int indent, in
 
         if (temp.length() > 0)
         {
-            out << std::setw(indent) << out.fill() << temp << std::endl;
+            out << std::setw(indent) << out.fill() << temp << '\n';
         }
     }
 }
@@ -250,12 +260,12 @@ template <typename T>
 void PrintPrettyMessage(std::ostream & out, const T & content, int width)
 {
     out << std::setfill('_')
-        << "     " << std::setw(width) << "_" << std::endl;
+        << "     " << std::setw(width) << "_" << '\n';
     out << std::setfill(' ')
         << "  .' " << std::setw(width) << " " << " '.\n";
     out << " /          You were expecting" << std::setw(width - 25) << " " << "   \\\n\n";
 
-    out << content << std::endl;
+    out << content << '\n';
 
     out << " \\      ";
     Padding(out, width - 32);
@@ -281,7 +291,11 @@ void PrintResource(std::ostream & out, unsigned char res[], unsigned int size, i
            indent_here = false;
         }
 
-        out << res[index];
+#if NEWLINE_MODE == NEWLINE_MODES_LF
+        if (res[index] != 0x0d)
+#endif
+            out << res[index];
+
         indent_here = res[index] == '\n';
         index = index + 1;
     }
