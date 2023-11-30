@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <windows.h>
 
 #define POSIX 1
 #define WINDOWS 2
@@ -91,6 +92,7 @@ void PrintResource(std::ostream & out, unsigned char res[], unsigned int size, i
 
 int main(int argc, char ** argv)
 {
+    SetConsoleOutputCP(CP_UTF8);
     std::string buf;
     std::ostringstream temp;
 
